@@ -1331,8 +1331,13 @@ int __vc4_crtc_init(struct drm_device *drm,
 	vc4_crtc->pdev = pdev;
 	vc4_crtc->feeds_txp = feeds_txp;
 	spin_lock_init(&vc4_crtc->irq_lock);
+#ifdef __linux__
 	ret = drmm_crtc_init_with_planes(drm, crtc, primary_plane, NULL,
 					 crtc_funcs, data->name);
+#elif defined(__FreeBSD__)
+	ret = drmm_crtc_init_with_planes(drm, crtc, primary_plane, NULL,
+					 crtc_funcs, "%s", data->name);
+#endif
 	if (ret)
 		return ret;
 
@@ -1441,19 +1446,27 @@ static void vc4_crtc_unbind(struct device *dev, struct device *master,
 	platform_set_drvdata(pdev, NULL);
 }
 
+#ifdef __linux__
 static const struct component_ops vc4_crtc_ops = {
 	.bind   = vc4_crtc_bind,
 	.unbind = vc4_crtc_unbind,
 };
+#endif
 
 static int vc4_crtc_dev_probe(struct platform_device *pdev)
 {
+#ifdef __linux__
 	return component_add(&pdev->dev, &vc4_crtc_ops);
+#elif defined(__FreeBSD__)
+	return 0;
+#endif
 }
 
 static void vc4_crtc_dev_remove(struct platform_device *pdev)
 {
+#ifdef __linux__
 	component_del(&pdev->dev, &vc4_crtc_ops);
+#endif
 }
 
 struct platform_driver vc4_crtc_driver = {

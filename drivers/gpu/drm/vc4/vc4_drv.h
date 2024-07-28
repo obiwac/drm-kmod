@@ -618,6 +618,10 @@ struct vc4_crtc_state {
 #define to_vc4_crtc_state(_state)				\
 	container_of_const(_state, struct vc4_crtc_state, base)
 
+#if defined(__FreeBSD__)
+#define kunit_fail_current_test(...)
+#endif
+
 #define V3D_READ(offset)								\
 	({										\
 		kunit_fail_current_test("Accessing a register in a unit test!\n");	\
