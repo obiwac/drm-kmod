@@ -302,7 +302,11 @@ static void vc4_bo_purge(struct drm_gem_object *obj)
 	WARN_ON(!mutex_is_locked(&bo->madv_lock));
 	WARN_ON(bo->madv != VC4_MADV_DONTNEED);
 
+#ifdef __linux__
 	drm_vma_node_unmap(&obj->vma_node, dev->anon_inode->i_mapping);
+#elif defined(__FreeBSD__)
+	drm_vma_node_unmap(&obj->vma_node, obj);
+#endif
 
 	dma_free_wc(dev->dev, obj->size, bo->base.vaddr, bo->base.dma_addr);
 	bo->base.vaddr = NULL;

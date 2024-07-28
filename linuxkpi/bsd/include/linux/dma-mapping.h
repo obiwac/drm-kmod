@@ -15,4 +15,11 @@
 #define dma_unmap_resource(dev, dma_addr, size, dir, attrs)     \
 	linux_dma_unmap(dev, dma_addr, size)
 
+static inline void
+dma_free_wc(struct device *dev, size_t size, void *vaddr, dma_addr_t dma)
+{
+
+	pr_debug("%s: TODO\n", __func__);
+}
+
 #endif	/* _BSD_LKPI_LINUX_DMA_MAPPING_H_ */
