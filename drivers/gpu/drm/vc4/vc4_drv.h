@@ -20,7 +20,9 @@
 #include <drm/drm_mm.h>
 #include <drm/drm_modeset_lock.h>
 
+#if !defined(__FreeBSD__)
 #include <kunit/test-bug.h>
+#endif
 
 #include "uapi/drm/vc4_drm.h"
 
