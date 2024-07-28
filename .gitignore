@@ -77,3 +77,8 @@ vmwgfx/i386
 vmwgfx/x86
 vmwgfx/machine
 vmwgfx/export_syms
+vc4/*.h
+vc4/i386
+vc4/x86
+vc4/machine
+vc4/export_syms
