@@ -352,7 +352,11 @@ static int vc4_drm_bind(struct device *dev)
 		}
 	}
 
+#ifdef __linux__
 	ret = drm_aperture_remove_framebuffers(driver);
+#elif defined(__FreeBSD__)
+	ret = drm_aperture_remove_framebuffers(false, driver);
+#endif
 	if (ret)
 		goto err;
 
@@ -498,11 +502,18 @@ static void __exit vc4_drm_unregister(void)
 	platform_driver_unregister(&vc4_platform_driver);
 }
 
+#ifdef __linux__
 module_init(vc4_drm_register);
 module_exit(vc4_drm_unregister);
+#elif defined(__FreeBSD__)
+LKPI_DRIVER_MODULE(vc4, vc4_drm_register, vc4_drm_unregister);
+#endif
 
+#ifdef __linux__
 MODULE_ALIAS("platform:vc4-drm");
 MODULE_SOFTDEP("pre: snd-soc-hdmi-codec");
+#endif
+
 MODULE_DESCRIPTION("Broadcom VC4 DRM Driver");
 MODULE_AUTHOR("Eric Anholt <eric@anholt.net>");
 MODULE_LICENSE("GPL v2");
