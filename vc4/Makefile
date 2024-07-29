@@ -49,15 +49,16 @@ CFLAGS+= '-DKBUILD_MODNAME="${KMOD}"'
 CFLAGS+= '-DLINUXKPI_PARAM_PREFIX=vc4_' -DDRM_SYSCTL_PARAM_PREFIX=_${KMOD}
 CFLAGS+= ${KCONFIG:C/(.*)/-DCONFIG_\1/}
 
-# TODO Which of these are actually needed?
-
-
-CFLAGS.gcc+= -Wno-redundant-decls -Wno-cast-qual -Wno-unused-but-set-variable \
-	-Wno-maybe-uninitialized
-
 SRCS+=	device_if.h vnode_if.h bus_if.h pci_if.h pci_iov_if.h device_if.h iicbus_if.h opt_drm.h \
 	opt_vm.h opt_syscons.h
 
 .include <bsd.kmod.mk>
 
 CWARNFLAGS+=			-Wno-pointer-arith ${CWARNFLAGS.${.IMPSRC:T}}
+
+# TODO Which of these are actually needed?
+
+CFLAGS.gcc+= -Wno-redundant-decls -Wno-unused-but-set-variable \
+	-Wno-maybe-uninitialized
+
+CFLAGS+=	-Wno-cast-qual -Wno-incompatible-pointer-types-discards-qualifiers
