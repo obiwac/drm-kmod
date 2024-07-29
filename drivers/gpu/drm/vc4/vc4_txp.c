@@ -563,19 +563,27 @@ static void vc4_txp_unbind(struct device *dev, struct device *master,
 	drm_connector_cleanup(&txp->connector.base);
 }
 
+#ifdef __linux__
 static const struct component_ops vc4_txp_ops = {
 	.bind   = vc4_txp_bind,
 	.unbind = vc4_txp_unbind,
 };
+#endif
 
 static int vc4_txp_probe(struct platform_device *pdev)
 {
+#ifdef __linux__
 	return component_add(&pdev->dev, &vc4_txp_ops);
+#elif defined(__FreeBSD__)
+	return 0;
+#endif
 }
 
 static void vc4_txp_remove(struct platform_device *pdev)
 {
+#ifdef __linux__
 	component_del(&pdev->dev, &vc4_txp_ops);
+#endif
 }
 
 static const struct of_device_id vc4_txp_dt_match[] = {

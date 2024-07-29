@@ -45,4 +45,29 @@ drm_writeback_set_fb(struct drm_connector_state *cs, struct drm_framebuffer *fb)
 	return 0;
 }
 
+static inline void
+drm_writeback_queue_job(struct drm_writeback_connector *connector, struct drm_connector_state *cs)
+{
+	pr_debug("%s: TODO\n", __func__);
+}
+
+static inline void
+drm_writeback_signal_completion(struct drm_writeback_connector *connector, int status)
+{
+	pr_debug("%s: TODO\n", __func__);
+}
+
+static inline int
+drm_writeback_connector_init_with_encoder(
+	struct drm_device *dev,
+	struct drm_writeback_connector *wb_conn,
+	struct drm_encoder *encoder,
+	struct drm_connector_funcs const *funcs,
+	uint32_t const *formats,
+	size_t size
+)
+{
+	return 0;
+}
+
 #endif
