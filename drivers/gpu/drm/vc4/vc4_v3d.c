@@ -522,19 +522,27 @@ static const struct dev_pm_ops vc4_v3d_pm_ops = {
 	SET_RUNTIME_PM_OPS(vc4_v3d_runtime_suspend, vc4_v3d_runtime_resume, NULL)
 };
 
+#ifdef __linux__
 static const struct component_ops vc4_v3d_ops = {
 	.bind   = vc4_v3d_bind,
 	.unbind = vc4_v3d_unbind,
 };
+#endif
 
 static int vc4_v3d_dev_probe(struct platform_device *pdev)
 {
+#ifdef __linux__
 	return component_add(&pdev->dev, &vc4_v3d_ops);
+#elif defined(__FreeBSD__)
+	return 0;
+#endif
 }
 
 static void vc4_v3d_dev_remove(struct platform_device *pdev)
 {
+#ifdef __linux__
 	component_del(&pdev->dev, &vc4_v3d_ops);
+#endif
 }
 
 const struct of_device_id vc4_v3d_dt_match[] = {
