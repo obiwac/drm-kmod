@@ -36,4 +36,12 @@ int drm_connector_helper_get_modes_fixed(struct drm_connector *connector,
 					 const struct drm_display_mode *fixed_mode);
 int drm_connector_helper_get_modes(struct drm_connector *connector);
 
+static inline int
+drm_connector_helper_tv_get_modes(struct drm_connector *connector)
+{
+
+	pr_debug("%s: TODO\n", __func__);
+	return (0);
+}
+
 #endif

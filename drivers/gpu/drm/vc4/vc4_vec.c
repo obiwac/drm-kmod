@@ -747,6 +747,7 @@ static int vc4_vec_bind(struct device *dev, struct device *master, void *data)
 	struct vc4_vec *vec;
 	int ret;
 
+#ifdef __linux__
 	ret = drm_mode_create_tv_properties(drm,
 					    BIT(DRM_MODE_TV_MODE_NTSC) |
 					    BIT(DRM_MODE_TV_MODE_NTSC_443) |
@@ -757,6 +758,7 @@ static int vc4_vec_bind(struct device *dev, struct device *master, void *data)
 					    BIT(DRM_MODE_TV_MODE_SECAM));
 	if (ret)
 		return ret;
+#endif
 
 	vec = drmm_kzalloc(drm, sizeof(*vec), GFP_KERNEL);
 	if (!vec)
@@ -803,18 +805,26 @@ static int vc4_vec_bind(struct device *dev, struct device *master, void *data)
 	return 0;
 }
 
+#ifdef __linux__
 static const struct component_ops vc4_vec_ops = {
 	.bind   = vc4_vec_bind,
 };
+#endif
 
 static int vc4_vec_dev_probe(struct platform_device *pdev)
 {
+#ifdef __linux__
 	return component_add(&pdev->dev, &vc4_vec_ops);
+#elif defined(__FreeBSD__)
+	return 0;
+#endif
 }
 
 static void vc4_vec_dev_remove(struct platform_device *pdev)
 {
+#ifdef __linux__
 	component_del(&pdev->dev, &vc4_vec_ops);
+#endif
 }
 
 struct platform_driver vc4_vec_driver = {

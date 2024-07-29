@@ -24,6 +24,7 @@
  * Daniel Vetter <daniel.vetter@ffwll.ch>
  */
 
+#include <linux/kernel.h>
 #include <linux/types.h>
 
 struct drm_bridge;
@@ -93,3 +94,13 @@ void __drm_atomic_helper_bridge_reset(struct drm_bridge *bridge,
 				      struct drm_bridge_state *state);
 struct drm_bridge_state *
 drm_atomic_helper_bridge_reset(struct drm_bridge *bridge);
+
+struct drm_atomic_state;
+
+static inline int
+drm_atomic_helper_connector_tv_check(struct drm_connector *connector, struct drm_atomic_state *state)
+{
+
+	pr_debug("%s: TODO\n", __func__);
+	return (0);
+}
