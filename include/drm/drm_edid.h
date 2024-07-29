@@ -614,4 +614,12 @@ int drm_edid_connector_update(struct drm_connector *connector,
 const u8 *drm_find_edid_extension(const struct drm_edid *drm_edid,
 				  int ext_id, int *ext_index);
 
+static inline int
+drm_edid_connector_add_modes(struct drm_connector *connector)
+{
+
+	pr_debug("%s: TODO\n", __func__);
+	return (0);
+}
+
 #endif /* __DRM_EDID_H__ */

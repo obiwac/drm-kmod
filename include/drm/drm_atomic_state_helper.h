@@ -104,3 +104,10 @@ drm_atomic_helper_connector_tv_check(struct drm_connector *connector, struct drm
 	pr_debug("%s: TODO\n", __func__);
 	return (0);
 }
+
+static inline void
+drm_atomic_helper_connector_tv_margins_reset(struct drm_connector *connector)
+{
+
+	pr_debug("%s: TODO\n", __func__);
+}

@@ -720,6 +720,14 @@ struct drm_display_info {
 	 * @mso_pixel_overlap: eDP MSO segment pixel overlap, 0-8 pixels.
 	 */
 	u8 mso_pixel_overlap;
+
+	/**
+	 * @source_physical_address: Source Physical Address from HDMI
+	 * Vendor-Specific Data Block, for CEC usage.
+	 *
+	 * Defaults to CEC_PHYS_ADDR_INVALID (0xffff).
+	 */
+	u16 source_physical_address;
 };
 
 int drm_display_info_set_bus_formats(struct drm_display_info *info,

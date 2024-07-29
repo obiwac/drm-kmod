@@ -757,7 +757,11 @@ static int vc4_hdmi_connector_init(struct drm_device *dev,
 	if (ret)
 		return ret;
 
+#ifdef __linux__
 	ret = drm_mode_create_hdmi_colorspace_property(connector, 0);
+#elif defined(__FreeBSD__)
+	ret = drm_mode_create_hdmi_colorspace_property(connector);
+#endif
 	if (ret)
 		return ret;
 
@@ -1032,8 +1036,13 @@ static void vc4_hdmi_enable_scrambling(struct drm_encoder *encoder)
 	if (!drm_dev_enter(drm, &idx))
 		return;
 
+#ifdef __linux__
 	drm_scdc_set_high_tmds_clock_ratio(connector, true);
 	drm_scdc_set_scrambling(connector, true);
+#elif defined(__FreeBSD__)
+	drm_scdc_set_high_tmds_clock_ratio(__DECONST(struct i2c_adapter *, connector), true);
+	drm_scdc_set_scrambling(__DECONST(struct i2c_adapter *, connector), true);
+#endif
 
 	spin_lock_irqsave(&vc4_hdmi->hw_lock, flags);
 	HDMI_WRITE(HDMI_SCRAMBLER_CTL, HDMI_READ(HDMI_SCRAMBLER_CTL) |
@@ -1074,8 +1083,13 @@ static void vc4_hdmi_disable_scrambling(struct drm_encoder *encoder)
 		   ~VC5_HDMI_SCRAMBLER_CTL_ENABLE);
 	spin_unlock_irqrestore(&vc4_hdmi->hw_lock, flags);
 
-	drm_scdc_set_scrambling(connector, false);
+#ifdef __linux__
 	drm_scdc_set_high_tmds_clock_ratio(connector, false);
+	drm_scdc_set_scrambling(connector, false);
+#elif defined(__FreeBSD__)
+	drm_scdc_set_high_tmds_clock_ratio(__DECONST(struct i2c_adapter *, connector), false);
+	drm_scdc_set_scrambling(__DECONST(struct i2c_adapter *, connector), false);
+#endif
 
 	drm_dev_exit(idx);
 }
@@ -1087,11 +1101,20 @@ static void vc4_hdmi_scrambling_wq(struct work_struct *work)
 						 scrambling_work);
 	struct drm_connector *connector = &vc4_hdmi->connector;
 
+#ifdef __linux__
 	if (drm_scdc_get_scrambling_status(connector))
+#elif defined(__FreeBSD__)
+	if (drm_scdc_get_scrambling_status(__DECONST(struct i2c_adapter *, connector)))
+#endif
 		return;
 
+#ifdef __linux__
 	drm_scdc_set_high_tmds_clock_ratio(connector, true);
 	drm_scdc_set_scrambling(connector, true);
+#elif defined(__FreeBSD__)
+	drm_scdc_set_high_tmds_clock_ratio(__DECONST(struct i2c_adapter *, connector), true);
+	drm_scdc_set_scrambling(__DECONST(struct i2c_adapter *, connector), true);
+#endif
 
 	queue_delayed_work(system_wq, &vc4_hdmi->scrambling_work,
 			   msecs_to_jiffies(SCRAMBLING_POLLING_DELAY_MS));
@@ -2833,8 +2856,10 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *vc4_hdmi)
 	 */
 	snd_soc_card_set_drvdata(card, vc4_hdmi);
 	ret = devm_snd_soc_register_card(dev, card);
+#ifdef __linux__
 	if (ret)
 		dev_err_probe(dev, ret, "Could not register sound card\n");
+#endif
 
 	return ret;
 
@@ -3782,18 +3807,26 @@ err_put_runtime_pm:
 	return ret;
 }
 
+#ifdef __linux__
 static const struct component_ops vc4_hdmi_ops = {
 	.bind   = vc4_hdmi_bind,
 };
+#endif
 
 static int vc4_hdmi_dev_probe(struct platform_device *pdev)
 {
+#ifdef __linux__
 	return component_add(&pdev->dev, &vc4_hdmi_ops);
+#elif defined(__FreeBSD__)
+	return 0;
+#endif
 }
 
 static void vc4_hdmi_dev_remove(struct platform_device *pdev)
 {
+#ifdef __linux__
 	component_del(&pdev->dev, &vc4_hdmi_ops);
+#endif
 }
 
 static const struct vc4_hdmi_variant bcm2835_variant = {
