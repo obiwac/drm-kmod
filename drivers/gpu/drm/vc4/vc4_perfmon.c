@@ -109,7 +109,11 @@ void vc4_perfmon_open_file(struct vc4_file *vc4file)
 		return;
 
 	mutex_init(&vc4file->perfmon.lock);
+#ifdef __linux__
 	idr_init_base(&vc4file->perfmon.idr, VC4_PERFMONID_MIN);
+#elif defined(__FreeBSD__)
+	idr_init(&vc4file->perfmon.idr);
+#endif
 	vc4file->dev = vc4;
 }
 
