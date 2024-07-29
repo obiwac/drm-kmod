@@ -3,6 +3,10 @@
 
 #include <linux/pm_runtime.h>
 
+#if defined(__FreeBSD__)
+#include <linux/platform_device.h>
+#endif
+
 #include "vc4_hdmi.h"
 
 #define VC4_HDMI_PACKET_STRIDE			0x24
