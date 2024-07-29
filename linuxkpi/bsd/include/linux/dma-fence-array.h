@@ -57,4 +57,12 @@ struct dma_fence *dma_fence_array_first(struct dma_fence *head);
 struct dma_fence *dma_fence_array_next(struct dma_fence *head,
     unsigned int index);
 
+static inline bool
+dma_fence_match_context(struct dma_fence *fence, uint64_t context)
+{
+
+	pr_debug("%s: TODO\n", __func__);
+	return false;
+}
+
 #endif /* _LINUX_DMA_FENCE_ARRAY_H_ */
