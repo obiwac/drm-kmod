@@ -379,18 +379,26 @@ static int vc4_dpi_bind(struct device *dev, struct device *master, void *data)
 	return 0;
 }
 
+#ifdef __linux__
 static const struct component_ops vc4_dpi_ops = {
 	.bind   = vc4_dpi_bind,
 };
+#endif
 
 static int vc4_dpi_dev_probe(struct platform_device *pdev)
 {
+#ifdef __linux__
 	return component_add(&pdev->dev, &vc4_dpi_ops);
+#elif defined(__FreeBSD__)
+	return 0;
+#endif
 }
 
 static void vc4_dpi_dev_remove(struct platform_device *pdev)
 {
+#ifdef __linux__
 	component_del(&pdev->dev, &vc4_dpi_ops);
+#endif
 }
 
 struct platform_driver vc4_dpi_driver = {
