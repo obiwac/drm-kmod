@@ -1051,19 +1051,27 @@ static void vc4_hvs_unbind(struct device *dev, struct device *master,
 	vc4->hvs = NULL;
 }
 
+#ifdef __linux__
 static const struct component_ops vc4_hvs_ops = {
 	.bind   = vc4_hvs_bind,
 	.unbind = vc4_hvs_unbind,
 };
+#endif
 
 static int vc4_hvs_dev_probe(struct platform_device *pdev)
 {
+#ifdef __linux__
 	return component_add(&pdev->dev, &vc4_hvs_ops);
+#elif defined(__FreeBSD__)
+	return 0;
+#endif
 }
 
 static void vc4_hvs_dev_remove(struct platform_device *pdev)
 {
+#ifdef __linux__
 	component_del(&pdev->dev, &vc4_hvs_ops);
+#endif
 }
 
 static const struct of_device_id vc4_hvs_dt_match[] = {

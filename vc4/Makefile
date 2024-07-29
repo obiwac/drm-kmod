@@ -61,4 +61,4 @@ CWARNFLAGS+=			-Wno-pointer-arith ${CWARNFLAGS.${.IMPSRC:T}}
 CFLAGS.gcc+= -Wno-redundant-decls -Wno-unused-but-set-variable \
 	-Wno-maybe-uninitialized
 
-CFLAGS+=	-Wno-cast-qual -Wno-incompatible-pointer-types-discards-qualifiers
+CFLAGS+=	-Wno-cast-qual -Wno-incompatible-pointer-types-discards-qualifiers -Wno-format-extra-args
