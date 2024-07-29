@@ -6,6 +6,21 @@
 #include <sys/types.h>
 #include <linux/errno.h>
 #include <linux/types.h>
+#include <linux/device.h>
+
+#define MIPI_DSI_MODE_VIDEO		BIT(0)
+#define MIPI_DSI_CLOCK_NON_CONTINUOUS	BIT(10)
+
+enum mipi_dsi_dcs_tear_mode {
+	MIPI_DSI_DCS_TEAR_MODE_UNUSED
+};
+
+enum mipi_dsi_pixel_format {
+	MIPI_DSI_FMT_RGB888,
+	MIPI_DSI_FMT_RGB666,
+	MIPI_DSI_FMT_RGB666_PACKED,
+	MIPI_DSI_FMT_RGB565,
+};
 
 struct mipi_dsi_host;
 struct mipi_dsi_device;
@@ -20,6 +35,7 @@ struct mipi_dsi_host_ops {
 
 struct mipi_dsi_host {
 	const struct mipi_dsi_host_ops *ops;
+	struct device *dev;
 };
 
 struct mipi_dsi_device {
@@ -27,6 +43,8 @@ struct mipi_dsi_device {
 	uint32_t channel;
 	uint32_t mode_flags;
 #define MIPI_DSI_MODE_LPM	(1 << 0)
+	uint32_t lanes;
+	enum mipi_dsi_pixel_format format;
 };
 
 struct mipi_dsi_msg {
@@ -45,17 +63,6 @@ struct mipi_dsi_packet {
 	size_t payload_length;
 	uint8_t	header[4];
 	const uint8_t *payload;
-};
-
-enum mipi_dsi_dcs_tear_mode {
-	MIPI_DSI_DCS_TEAR_MODE_UNUSED
-};
-
-enum mipi_dsi_pixel_format {
-	MIPI_DSI_FMT_RGB888,
-	MIPI_DSI_FMT_RGB666,
-	MIPI_DSI_FMT_RGB666_PACKED,
-	MIPI_DSI_FMT_RGB565,
 };
 
 int mipi_dsi_attach(struct mipi_dsi_device *);
@@ -86,6 +93,19 @@ mipi_dsi_pixel_format_to_bpp(enum mipi_dsi_pixel_format fmt)
 		return 16;
 	}
 	return -EINVAL;
+}
+
+static inline int mipi_dsi_host_register(struct mipi_dsi_host *host)
+{
+
+	pr_debug("%s: TODO\n", __func__);
+	return 0;
+}
+
+static inline void mipi_dsi_host_unregister(struct mipi_dsi_host *host)
+{
+
+	pr_debug("%s: TODO\n", __func__);
 }
 
 #endif

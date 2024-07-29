@@ -1339,12 +1339,16 @@ reset_fifo_and_return:
 	return ret;
 }
 
+#ifdef __linux__
 static const struct component_ops vc4_dsi_ops;
+#endif
 static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
 			       struct mipi_dsi_device *device)
 {
 	struct vc4_dsi *dsi = host_to_dsi(host);
+#ifdef __linux__
 	int ret;
+#endif
 
 	dsi->lanes = device->lanes;
 	dsi->channel = device->channel;
@@ -1381,11 +1385,13 @@ static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
 
 	drm_bridge_add(&dsi->bridge);
 
+#ifdef __linux__
 	ret = component_add(&dsi->pdev->dev, &vc4_dsi_ops);
 	if (ret) {
 		drm_bridge_remove(&dsi->bridge);
 		return ret;
 	}
+#endif
 
 	return 0;
 }
@@ -1395,7 +1401,9 @@ static int vc4_dsi_host_detach(struct mipi_dsi_host *host,
 {
 	struct vc4_dsi *dsi = host_to_dsi(host);
 
+#ifdef __linux__
 	component_del(&dsi->pdev->dev, &vc4_dsi_ops);
+#endif
 	drm_bridge_remove(&dsi->bridge);
 	return 0;
 }
@@ -1797,9 +1805,11 @@ static int vc4_dsi_bind(struct device *dev, struct device *master, void *data)
 	return 0;
 }
 
+#ifdef __linux__
 static const struct component_ops vc4_dsi_ops = {
 	.bind   = vc4_dsi_bind,
 };
+#endif
 
 static int vc4_dsi_dev_probe(struct platform_device *pdev)
 {
